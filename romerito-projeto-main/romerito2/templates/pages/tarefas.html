@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block navbar %}
+            <div class="opcoes">
+                <a href="{{url_for('index')}}">
+                    <h2>Pagina Inicial</h2>
+                </a>
+            </div>
+            <div class="login">
+                <a href="{{url_for('login')}}">
+                    <h2>login</h2>
+                </a>
+                <a href="{{url_for('register')}}">
+                    <h2>Cadastre-se</h2>
+                </a>
+            </div>
+{% endblock %}
+
+{% block conteudo %}
+    <h1>Tarefas</h1>
+    
+    <form method="GET" action="{{ url_for('ver_tarefas') }}">
+        <label for="status">Status:</label>
+        <select name="status">
+            <option value="">Todos</option>
+            <option value="Pendente" {% if status_filter == 'Pendente' %}selected{% endif %}>Pendente</option>
+            <option value="Em andamento" {% if status_filter == 'Em andamento' %}selected{% endif %}>Em andamento</option>
+            <option value="Concluída" {% if status_filter == 'Concluída' %}selected{% endif %}>Concluída</option>
+        </select>
+        
+        <button type="submit">Filtrar</button>
+        
+        
+    </form>
+
+    <h2>Lista de Tarefas</h2>
+    <ul>
+        {% for tarefa in tarefas %}
+                <li>
+                    <strong>{{ tarefa.titulo }}</strong><br>
+                    Conteúdo: {{ tarefa.conteudo }}<br>
+                    Status: {{ tarefa.status }}<br>
+                    Criada em: {{ tarefa.data_criacao }}<br>
+                    <form method="POST" action="{{ url_for('delete_tarefa', id=tarefa.id) }}">
+                        <button type="submit">apagar</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('concluida', id=tarefa.id) }}">
+                        <button type="submit">Concluir</button>
+                    </form>
+                </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('create_tarefa') }}">Criar nova tarefa</a>
+{% endblock %}
